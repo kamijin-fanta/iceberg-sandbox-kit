@@ -1,6 +1,6 @@
 include .env
 
-.PHONY: start stop clean trino minio mysql debug
+.PHONY: start stop clean trino minio mysql debug build init-table insert-row
 
 start:
 	docker compose up -d
@@ -25,3 +25,12 @@ mysql:
 
 debug:
 	docker compose exec debug bash
+
+build:
+	docker compose build
+
+init-table:
+	docker compose exec trino trino --catalog iceberg --schema default --execute "CREATE SCHEMA IF NOT EXISTS default; USE default; CREATE TABLE IF NOT EXISTS t1 (a int, b int);"
+
+insert-row:
+	docker compose exec trino trino --catalog iceberg --schema default --execute "USE default; INSERT INTO t1 VALUES (1, 2); SELECT * FROM t1;"
