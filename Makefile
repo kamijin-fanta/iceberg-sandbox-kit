@@ -6,7 +6,7 @@ start:
 	docker compose up -d
 	# Service started!
 	# Trino: http://localhost:8080 / User: dummy
-	# Minio: http://localhost:9000 / User: ${AWS_ACCESS_KEY_ID} / Password: ${AWS_SECRET_ACCESS_KEY}
+	# Minio: http://localhost:9090 / User: ${AWS_ACCESS_KEY_ID} / Password: ${AWS_SECRET_ACCESS_KEY}
 
 stop:
 	docker compose stop
