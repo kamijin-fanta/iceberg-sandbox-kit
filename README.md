@@ -69,9 +69,9 @@ Iceberg で利用される主なフォーマットである、JSON,Avro,Parquet 
 $ make debug  # デバッグ用コンテナが起動
 
 root@debug:/mnt/s3# tree
-root@debug:/mnt/s3# jq '.' default/t1/metadata/00001-5e8f....ea99.metadata.json
-root@debug:/mnt/s3# avrocat default/t1/metadata/snap-8429...ef78.avro | jq '.'
-root@debug:/mnt/s3# pqrs cat default/t1/data/2023....a688.parquet
+root@debug:/mnt/s3# jq '.' default/t1-XXXX/metadata/0000X-XXXX.metadata.json
+root@debug:/mnt/s3# avrocat default/t1-XXXX/metadata/snap-XXXX.avro | jq '.'
+root@debug:/mnt/s3# duckdb -c "SELECT * FROM 'default/t1-XXXX/data/2025....XXXX.parquet'"
 ```
 
 ## 5. View the MitM Proxy logs
@@ -86,9 +86,9 @@ http://localhost:8081/
 `make trino` で CLI を開いていくつかのデータを Insert したあと、以下のような最適化コマンドでメタデータ・データがどう変化するかを確認します。
 
 ```sql
-ALTER TABLE example EXECUTE optimize(file_size_threshold => '10MB');
-ALTER TABLE example EXECUTE expire_snapshots(retention_threshold => '7d');
-ALTER TABLE example EXECUTE remove_orphan_files(retention_threshold => '7d');
+ALTER TABLE t1 EXECUTE optimize(file_size_threshold => '10MB');
+ALTER TABLE t1 EXECUTE expire_snapshots(retention_threshold => '7d');
+ALTER TABLE t1 EXECUTE remove_orphan_files(retention_threshold => '7d');
 ```
 
 ## 7. Cleanup
