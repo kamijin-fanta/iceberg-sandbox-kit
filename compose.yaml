@@ -45,7 +45,7 @@ services:
       - CATALOG_JDBC_PASSWORD=${REST_CATALOG_DB_PASSWORD}
 
   mysql:
-    image: mysql:8.0-debian
+    image: mysql:8.0
     restart: unless-stopped
     volumes:
       - rest-mysql-data:/var/lib/mysql
@@ -84,7 +84,7 @@ services:
     volumes:
       - ./mitmproxy:/home/mitmproxy/.mitmproxy
     command: mitmweb --web-host 0.0.0.0
-  
+
   debug:
     # minio storage is mounted and tools such as avro cli, pqrs(parquet read cli), and jq are installed.
     build:
