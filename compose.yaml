@@ -74,7 +74,6 @@ services:
       MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
       MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
       MINIO_CONSOLE_ADDRESS: ":9090"
-    command: server /data
     entrypoint: sh
     command: -c 'mkdir -p /data/bucket && /opt/bin/minio server /data'
 
