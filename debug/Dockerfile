@@ -12,8 +12,11 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp
-RUN curl https://install.duckdb.org | sh
-ENV PATH="/root/.duckdb/cli/latest:${PATH}"
+RUN ARCH=$(uname -m) && \
+  wget "https://github.com/manojkarthick/pqrs/releases/download/v0.3.2/pqrs-0.3.2-${ARCH}-unknown-linux-gnu.zip" -O pqrs.zip; \
+  unzip pqrs.zip && \
+  mv ./pqrs-*/bin/pqrs /usr/local/bin/pqrs && \
+  rm -rf pqrs.zip pqrs-*
 
 COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY ./run.sh /usr/local/bin/run.sh
