@@ -71,7 +71,7 @@ $ make debug  # デバッグ用コンテナが起動
 root@debug:/mnt/s3# tree
 root@debug:/mnt/s3# jq '.' default/t1-XXXX/metadata/0000X-XXXX.metadata.json
 root@debug:/mnt/s3# avrocat default/t1-XXXX/metadata/snap-XXXX.avro | jq '.'
-root@debug:/mnt/s3# duckdb -c "SELECT * FROM 'default/t1-XXXX/data/2025....XXXX.parquet'"
+root@debug:/mnt/s3# pqrs cat default/t1-XXXX/data/2025....XXXX.parquet
 ```
 
 ## 5. View the MitM Proxy logs
