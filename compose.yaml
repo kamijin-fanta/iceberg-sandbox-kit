@@ -28,12 +28,12 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_REGION=us-east-1
       - HTTP_PROXY=http://mitmproxy:8080
-      # has prefix "CATALOG_" variable convert rules
-      # impl: https://github.com/tabular-io/iceberg-rest-image/blob/master/src/main/java/org/apache/iceberg/rest/RESTCatalogServer.java
-      # 1. remove prefix "CATALOG_"
-      # 2. replace "__" to "-"
-      # 3. replace "_" to "."
-      # 4. convert to lower case
+      # Environment variables prefixed by CATALOG_ are passed through the catalog configuring with the following mutations:
+      # docs: https://github.com/apache/iceberg/blob/main/open-api/README.md
+      # 1. The CATALOG_ prefix is stripped from the key name
+      # 2. Single underscore (_) is replaced with a dot (.)
+      # 3. Double underscore (__) is replaced with a dash (-)
+      # 4. The key names are converted to lowercase
       - CATALOG_WAREHOUSE=s3://bucket/
       - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
       - CATALOG_S3_PATH__STYLE__ACCESS=true
