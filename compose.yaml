@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   trino:
     image: trinodb/trino:427
@@ -14,7 +13,7 @@ services:
 
   rest:
     # Fix to add MySQL driver to original image
-    # image: tabulario/iceberg-rest:0.6.0
+    # image: apache/iceberg-rest-fixture:1.8.1
     build:
       context: ./rest-catalog/
       dockerfile: Dockerfile
@@ -29,12 +28,12 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_REGION=us-east-1
       - HTTP_PROXY=http://mitmproxy:8080
-      # has prefix "CATALOG_" variable convert rules
-      # impl: https://github.com/tabular-io/iceberg-rest-image/blob/master/src/main/java/org/apache/iceberg/rest/RESTCatalogServer.java
-      # 1. remove prefix "CATALOG_"
-      # 2. replace "__" to "-"
-      # 3. replace "_" to "."
-      # 4. convert to lower case
+      # Environment variables prefixed by CATALOG_ are passed through the catalog configuring with the following mutations:
+      # docs: https://github.com/apache/iceberg/blob/main/open-api/README.md
+      # 1. The CATALOG_ prefix is stripped from the key name
+      # 2. Single underscore (_) is replaced with a dot (.)
+      # 3. Double underscore (__) is replaced with a dash (-)
+      # 4. The key names are converted to lowercase
       - CATALOG_WAREHOUSE=s3://bucket/
       - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
       - CATALOG_S3_PATH__STYLE__ACCESS=true
@@ -45,7 +44,7 @@ services:
       - CATALOG_JDBC_PASSWORD=${REST_CATALOG_DB_PASSWORD}
 
   mysql:
-    image: mysql:8.0-debian
+    image: mysql:9.2
     restart: unless-stopped
     volumes:
       - rest-mysql-data:/var/lib/mysql
@@ -63,7 +62,7 @@ services:
       retries: 30
 
   minio:
-    image: minio/minio:RELEASE.2023-09-23T03-47-50Z
+    image: minio/minio:RELEASE.2025-03-12T18-04-18Z
     ports:
       - 9000:9000
       - 9090:9090
@@ -75,16 +74,16 @@ services:
       MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
       MINIO_CONSOLE_ADDRESS: ":9090"
     entrypoint: sh
-    command: -c 'mkdir -p /data/bucket && /opt/bin/minio server /data'
+    command: -c 'mkdir -p /data/bucket && minio server /data'
 
   mitmproxy:
-    image: mitmproxy/mitmproxy:10.1.1
+    image: mitmproxy/mitmproxy:11.1.3
     ports:
       - 8081:8081
     volumes:
       - ./mitmproxy:/home/mitmproxy/.mitmproxy
     command: mitmweb --web-host 0.0.0.0
-  
+
   debug:
     # minio storage is mounted and tools such as avro cli, pqrs(parquet read cli), and jq are installed.
     build:
